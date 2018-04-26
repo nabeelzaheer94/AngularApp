@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AuthenticationContext,AdalConfig} from 'adal-typescript';
+import { AuthenticationContext, AdalConfig } from 'adal-typescript';
 
 @Component({
   selector: 'app-root',
@@ -8,52 +8,58 @@ import {AuthenticationContext,AdalConfig} from 'adal-typescript';
 })
 
 export class AppComponent {
- // title = 'the World of Angular';
-  constructor(){
-  //var organizationURI = "https:// [organization name].crm.dynamics.com"; //The URL to connect to CRM (online)  
-}
-}
-var organizationURI = "https://axpedu.api.crm4.dynamics.com"; //The URL to connect to CRM (online)
-var tenant = "51ce4423-399b-45ee-8ccb-2e5567af477a"; //The name of the Azure AD organization you use
-var clientId = "b5abc1b9-8d37-4c6d-aec4-9516cb37afee"; //The ClientId you got when you registered the application
-var pageUrl = "http://localhost:4200"; //The URL of this page in your development environment when debugging.
+  // title = 'the World of Angular';
+  constructor() {
+    // var organizationURI = "https:// [organization name].crm.dynamics.com"; //The URL to connect to CRM (online)
+  }
 
-var user, authContext, message, errorMessage, loginButton, logoutButton, getAccountsButton, accountsTable, accountsTableBody;
+  readonly organizationURI = 'https://axpedu.api.crm4.dynamics.com'; // The URL to connect to CRM (online)
+  readonly tenant = '51ce4423-399b-45ee-8ccb-2e5567af477a'; // The name of the Azure AD organization you use
+  readonly clientId = 'b5abc1b9-8d37-4c6d-aec4-9516cb37afee'; // The ClientId you got when you registered the application
+  readonly pageUrl = 'http://localhost:4200'; // The URL of this page in your development environment when debugging.
 
-//Configuration data for AuthenticationContext
-var endpoints = {
- orgUri: organizationURI
-};
-this.config= {
-  tenant: tenant,
-  clientId: clientId,
-  postLogoutRedirectUri: pageUrl,
-  endpoints: endpoints,
-  cacheLocation: 'localStorage', // enable this for IE, as sessionStorage does not work for localhost.
- };
+  // Configuration data for AuthenticationContext
+  readonly endpoints = {
+    orgUri: this.organizationURI
+  };
 
-function login():void {
-  authContext = new AuthenticationContext(this.config);
-var label = document.getElementById('invisible');
-label.style.display = 'block';
-// Check For & Handle Redirect From AAD After Login
-var isCallback = authContext.isCallback(window.location.hash);
-if (isCallback) {
- authContext.handleWindowCallback();
-}
-var loginError = authContext.getLoginError();
+  config = {
+    tenant: this.tenant,
+    clientId: this.clientId,
+    postLogoutRedirectUri: this.pageUrl,
+    endpoints: this.endpoints,
+    cacheLocation: 'localStorage', // enable this for IE, as sessionStorage does not work for localhost.
+  };
 
-if (isCallback && !loginError) {
-    window.location.href = authContext._getItem(authContext.CONSTANTS.STORAGE.LOGIN_REQUEST);
-}
-else {
- errorMessage.textContent = loginError;
-}
-user = authContext.getCachedUser();
-authContext.login();
+  authContext: Object;
+  errorMessage: Object;
+  user: Object;
+
+  login(): void {
+    this.authContext = new AuthenticationContext(this.config);
+    const label = document.getElementById('invisible');
+    label.style.display = 'block';
+    // Check For & Handle Redirect From AAD After Login
+    const isCallback = this.authContext.isCallback(window.location.hash);
+    if (isCallback) {
+      this.authContext.handleWindowCallback();
+    }
+    const loginError = this.authContext.getLoginError();
+
+    if (isCallback && !loginError) {
+      window.location.href = this.authContext
+        ._getItem(this.authContext.CONSTANTS.STORAGE.LOGIN_REQUEST);
+    } else {
+      this.errorMessage.textContent = loginError;
+    }
+    this.user = this.authContext.getCachedUser();
+    this.authContext.login();
+  }
+
+  logout(): void {
+    this.authContext.logout();
+  }
+
 }
 
-function logout():void{
-  authContext.logout();
-}
 
