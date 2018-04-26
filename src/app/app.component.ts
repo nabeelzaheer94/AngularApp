@@ -33,7 +33,7 @@ this.config= {
  };
 
 function login():void {
-  //authContext = new AuthenticationContext(this.config);
+  authContext = new AuthenticationContext(this.config);
 var label = document.getElementById('invisible');
 label.style.display = 'block';
 // Check For & Handle Redirect From AAD After Login
